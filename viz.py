@@ -15,6 +15,8 @@ def plot_dist(df):
     plt.axvline(df.sellingprice.mean(), color='k', linestyle='dashed', linewidth=3)
     min_ylim, max_ylim = plt.ylim()
     plt.text(df.sellingprice.mean()*1.1, max_ylim*0.9, 'Average Price: ${:,}'.format(round(df.sellingprice.mean())))
+    plt.tick_params(axis="x", direction="in") 
+    plt.tick_params(axis="y", direction='in')   
     plt.show()
 
 def plot_mmr(df):
@@ -34,7 +36,7 @@ def plot_mmr(df):
         print('Correlation is confirmed')
 
 def corr_plot(df):
-    nums = ['odometer', 'mmr', 'age_at_sale', 'sellingprice', 'condition']
+    nums = ['odometer', 'mmr', 'age_at_sale', 'sellingprice', 'condition', 'miles_per_year']
 
     cats = ['transmission', 'body',
             'color', 'interior', 'state', 'make']
