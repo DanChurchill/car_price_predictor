@@ -54,3 +54,11 @@ def corr_plot(df):
         sns.boxplot(data=df, x=cat, y='sellingprice', order=my_order)
         plt.show()
 
+def compare_means(df,discrete_col,continuous_col):
+    group = df.groupby([discrete_col],as_index=False)[continuous_col].mean().reset_index(drop=True)
+    plt.figure(figsize=(10,5))
+    sns.barplot(x=group[discrete_col],y=group[continuous_col],palette='Reds')
+    plt.ylabel('mean ' + continuous_col)
+    plt.show()
+
+
