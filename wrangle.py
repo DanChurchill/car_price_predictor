@@ -30,6 +30,7 @@ def clean_cars(df):
     df['body'] = np.where((df['body'].str.contains('cab', case=False)), 'truck', df.body)
     df['body'] = np.where((df['body'].str.contains('koup', case=False)), 'coupe', df.body)
     df['body'] = np.where((df['body'].str.contains('crew', case=False)), 'truck', df.body)
+    df['body'] = np.where((df['body'].str.contains('suv', case=False)), 'SUV', df.body)
 
     # value cleanup
     df['saleyear'] = df.saledate.str[11:16].astype(int)  # get sale year from sale date
