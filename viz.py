@@ -38,7 +38,7 @@ def corr_plot(df):
     nums = ['odometer', 'mmr', 'age_at_sale', 'sellingprice', 'condition', 'miles_per_year']
 
     cats = ['transmission', 'body',
-            'color', 'interior', 'state', 'make', 'make_cat', 'state_cat', 'color_cat', 'interior_cat']
+            'color', 'interior', 'state', 'make', 'make_cat', 'state_cat', 'color_cat', 'interior_cat', 'trim_cat']
 
     # make correlation plot
     df_corr = df[nums].corr()

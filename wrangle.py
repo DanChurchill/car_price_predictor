@@ -76,6 +76,15 @@ def clean_cars(df):
     df['interior_cat'] = np.where((df.interior.isin(interior_index[4:11])), 'mid_interior', df.interior_cat)  
     df['interior_cat'] = np.where((df.interior.isin(interior_index[11:])), 'high_interior', df.interior_cat)
 
+    # create bins for trim
+    trimlist = df.groupby(['trim']).mean().sort_values('sellingprice')
+    trimlist['QuantileRank']= pd.qcut(trimlist['sellingprice'],
+                             q = 10, labels = ['trim1', 'trim2', 'trim3', 'trim4', 'trim5',
+                                               'trim6', 'trim7', 'trim8', 'trim9', 'trim10'])
+    trimlist['trimcol'] = trimlist.index
+    trim_dict = dict(zip(trimlist.trimcol, trimlist.QuantileRank))
+    df['trim_cat']= df.trim.map(trim_dict)
+    
     return df
 
 
