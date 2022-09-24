@@ -3,6 +3,12 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 
 
+def get_cars():
+    '''
+    function to read the dataset from local csv file
+    '''
+    return pd.read_csv('car_prices.csv', error_bad_lines=False, warn_bad_lines=False)
+
 def clean_cars(df):
     df.transmission = df.transmission.fillna('unknown_transmission')
     df.transmission.value_counts()
@@ -47,13 +53,14 @@ def clean_cars(df):
     # create miles per year column
     df['miles_per_year'] = (df.odometer / df.age_at_sale).astype(int)
 
-    # create categorical groupings for make
+    # create categorical groupings for make and drop original columns
     make_index = df.groupby(['make']).sellingprice.mean().to_frame().sort_values('sellingprice').index
     df['make_cat'] = ''
     df['make_cat'] = np.where((df.make.isin(make_index[:8])), 'cheap_make', df.make_cat)  
     df['make_cat'] = np.where((df.make.isin(make_index[8:19])), 'low_mid_make', df.make_cat)  
     df['make_cat'] = np.where((df.make.isin(make_index[19:29])), 'high_mid_make', df.make_cat)  
     df['make_cat'] = np.where((df.make.isin(make_index[29:])), 'luxury_make', df.make_cat)
+    
 
     # create categorical groupings for state
     state_index = df.groupby(['state']).sellingprice.median().to_frame().sort_values('sellingprice').index
@@ -84,8 +91,18 @@ def clean_cars(df):
     trimlist['trimcol'] = trimlist.index
     trim_dict = dict(zip(trimlist.trimcol, trimlist.QuantileRank))
     df['trim_cat']= df.trim.map(trim_dict)
+
+    for cat in ['make_cat', 'state_cat', 'color_cat', 'interior_cat', 'body', 'transmission', 'trim_cat']:
+        dummies = pd.get_dummies(df[cat], drop_first=True)
+        df = pd.concat([df, dummies], axis=1)
+
+    # drop columns not needed
+    df.drop(columns=['interior', 'color', 'state', 'make', 'seller', 'trim', 'model', 'make_cat', 'state_cat',
+                     'color_cat', 'transmission', 'vin', 'state', 'saledate', 'interior_cat', 'body', 'trim_cat'],
+                      inplace=True)
     
     return df
+
 
 
 def split_cars(df):
