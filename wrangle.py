@@ -97,9 +97,9 @@ def clean_cars(df):
         df = pd.concat([df, dummies], axis=1)
 
     # drop columns not needed
-    df.drop(columns=['interior', 'color', 'state', 'make', 'seller', 'trim', 'model', 'make_cat', 'state_cat',
-                     'color_cat', 'transmission', 'vin', 'state', 'saledate', 'interior_cat', 'body', 'trim_cat'],
-                      inplace=True)
+    # df.drop(columns=['interior', 'color', 'state', 'make', 'seller', 'trim', 'model', 'make_cat', 'state_cat',
+    #                  'color_cat', 'transmission', 'vin', 'state', 'saledate', 'interior_cat', 'body', 'trim_cat'],
+    #                   inplace=True)
     
     return df
 
