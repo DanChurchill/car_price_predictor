@@ -4,6 +4,11 @@ from scipy import stats
 import numpy as np
 import pandas as pd
 
+# plotting defaults
+plt.rc('figure', figsize=(18, 9))
+plt.style.use('seaborn-whitegrid')
+plt.rc('font', size=16)
+
 def plot_dist(df):
     # Plot Distribution of target variable
     plt.figure(figsize=(24,12))
@@ -15,7 +20,13 @@ def plot_dist(df):
     plt.axvline(df.sellingprice.mean(), color='k', linestyle='dashed', linewidth=3)
     min_ylim, max_ylim = plt.ylim()
     plt.text(df.sellingprice.mean()*1.1, max_ylim*0.9, 'Average Price: ${:,}'.format(round(df.sellingprice.mean())))
- 
+    plt.show()
+
+def mmr_plot(df):
+    sns.scatterplot(df.sellingprice, y=df.mmr)
+    b, a = np.polyfit(df.sellingprice, y=df.mmr, deg=1)
+    xseq = np.linspace(0, 60000, num=100)
+    plt.plot(xseq, a + b * xseq, color="r", lw=2.5)
     plt.show()
 
 def plot_mmr(df):
@@ -37,9 +48,6 @@ def plot_mmr(df):
 def corr_plot(df):
     nums = ['odometer', 'mmr', 'age_at_sale', 'sellingprice', 'condition', 'miles_per_year']
 
-    cats = ['transmission', 'body',
-            'color', 'interior', 'state', 'make', 'make_cat', 'state_cat', 'color_cat', 'interior_cat', 'trim_cat']
-
     # make correlation plot
     df_corr = df[nums].corr()
     plt.figure(figsize=(12,8))
@@ -47,6 +55,12 @@ def corr_plot(df):
     sns.heatmap(df_corr, cmap='Blues', annot = True, mask= np.triu(df_corr), linewidth=.5)
     plt.show()
 
+
+def cat_plot(df):
+
+    cats = ['transmission', 'body', 'color', 'interior', 'state', 'make', 'make_cat',
+            'state', 'color_cat', 'interior_cat', 'trim_cat']
+    
     for cat in cats:
         my_order = df.groupby(cat)["sellingprice"].median().sort_values().index
         plt.figure(figsize=(12,8))
