@@ -29,6 +29,13 @@ def mmr_plot(df):
     plt.plot(xseq, a + b * xseq, color="r", lw=2.5)
     plt.show()
 
+def results_plot(df, preds):
+    sns.scatterplot(df.sellingprice, df.mmr, label='MMR predictions')
+    sns.scatterplot(df.sellingprice, preds, alpha=.3, label = 'Model Predictions')
+    sns.lineplot(df.sellingprice, df.sellingprice, alpha = 1, color='black', label= 'Actual Values')
+    plt.legend()
+    plt.show()
+
 def plot_mmr(df):
     plt.figure(figsize=(24,12))
     sns.set(font_scale=1.5)
@@ -74,5 +81,26 @@ def compare_means(df,discrete_col,continuous_col):
     sns.barplot(x=group[discrete_col],y=group[continuous_col],palette='Reds')
     plt.ylabel('mean ' + continuous_col)
     plt.show()
+
+def transmission_anova(df):
+    auto = df[df.transmission == 'automatic']
+    man = df[df.transmission == 'manual']
+    unk = df[df.transmission == 'unknown_transmission']
+
+    print('Selling price of automatics:            ', end='')
+    print("${:.2f}".format(auto.sellingprice.mean()))
+    print('Selling price of unknown transmissions: ', end='')
+    print("${:.2f}".format(unk.sellingprice.mean()))
+    print('Selling price of manuals:               ', end='')
+    print("${:.2f}".format(man.sellingprice.mean()))
+
+    print("")
+
+    alpha = .05
+    f, p = stats.f_oneway(auto.sellingprice, man.sellingprice, unk.sellingprice) 
+    if p < alpha:
+        print("We reject the Null Hypothesis")
+    else:
+        print("We confirm the Null Hypothesis")
 
 
