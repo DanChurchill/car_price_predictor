@@ -45,7 +45,6 @@ def carwash_1(df):
     df = df[df['state'].map(df['state'].value_counts()) > 750] # remove rows with states that have less than 750 samples
     df = df[df['color'].map(df['color'].value_counts()) > 1000] # remove colors with less than 1000 samples
 
-
     return df
 
 def carwash_2(df):
@@ -61,7 +60,7 @@ def carwash_2(df):
     df['miles_per_year'] = (df.odometer / df.age_at_sale).astype(int)
 
     # drop columns not needed for modeling
-    df.drop(columns=['seller', 'vin', 'saledate'], inplace=True)
+    df.drop(columns=['seller', 'vin', 'saledate','saleyear'], inplace=True)
 
     cols = ['make', 'model', 'trim', 'body', 'transmission', 'state',
             'color', 'interior']
@@ -70,6 +69,8 @@ def carwash_2(df):
         df[col] = df[col].astype(object)
 
     return df    
+
+
 
     
 
