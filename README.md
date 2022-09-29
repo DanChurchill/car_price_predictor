@@ -86,23 +86,14 @@ Goal 3: Try some tools I haven't previously used including Skim, Pipeline, Targe
 
 ## <a name="wrangle"></a>Data Acquisition and Preparation
 
-Data is acquired from the Codeup Database server using an SQL query within the modular function wrangle_zillow located in the wrangle.py file.  This returns 43182 rows and 31 columns split into train, validate, and test dataframes in a 60% / 20% / 20% ratio.
+Data is acquired from a locally stored csv.  This returns 558,881 rows and 16 columns.
 
-Preparation is performed in the wrangle function prior to splitting consisting of the following:
+Preparation is performed by the carwash1 function which completes the following:
 
-- Converts the transaction dates to Datetime format, and removes a row with a 2018 property erroneously saved in the 2017 table
-- Converted the fips data to the actual name of the county
-- Removes the leading digits and decimal portion of the census tract
-- Converts nulls to zero where applicable in binary columns
-- Removes rows where unit count is greater than one, since these are likely erroneosly categorized as single-family
-- Deleted rows where a tax delinquency exists, as this could impact the tax values in ways we do not understand
-- Converted year built to age by subtracting the value from current year (2022)
-- Createed binary categorical columns for homes with greater than three bedrooms, and three to five garage parking spaces
-- One-hot encoded county, and bedroom count values
-- Renamed columns for clarity and to streamline programming
-- Rows with outliers are removed
-
-
+- Converted nulls in transmission category to 'unknown' 
+- Remaining nulls were dropped
+- Used string manipulation to standardize values in the make, model, trim, color, interior, and state categories
+- Filtered extreme outliers from our target variable, sellingprice
 
 [[Back to top](#top)]
 
@@ -113,31 +104,32 @@ Preparation is performed in the wrangle function prior to splitting consisting o
 
 ## <a name="explore"></a>Data Exploration:
 
-### Locate properties
-The first step was to use the fips value to identify the county each property was located in.  There were three values: 6037, 6059, 6111 corresponding to Los Angeles County, Orange County, and Vetura County repsectfully, all in California.
+### Investigate Target Variable
+The first step was to use plot the distribution of sellingprice.  The data is somewhat of a normal distribution, albeit right-skewed.
 
-### Exploring Tax Value
-Next we look at the distribution of the target variable, Tax Value.  The values appear somewhat normal, although right-skewed.  Values appear highest in Los Angeles county, followed by Orange County and Ventura County.  Testing using variance testing allows us to reject the null hypothesis that values are the same in all three counties.
+### Exploring MMR
+Next we look at the MMR and plot it vs actual selling price.  We calculate that the MMR model produces a RMSE of $1670, far superior to the mean baseline of $8757
 
-### Exploring Specific Location
-Exploring the values graphically on a map show that there are clusters of higher and lower valued homes within each county.  For this reason the tract column is used in modelling.  Ideally, this would be used as a categorically, but there are too many unique values to categorically encode.
+### Exploring Transmission Type
+Exploring the values graphically on a map show that there are differences in the mean selling value of vehicles depending upon what type of transmission is equipped.  We use an ANOVA test and were able to reject the null hypothesis that there is no difference.  This feature will be included in modeling, and the same process was performed on other categorical variables
 
-### Correlation of Numerical Features
-Using a correlation matrix we see that square footage is the most correlated to tax value, followed by bedrooms and bathrooms.  However, because bedrooms and bathrooms are highly linearly correlated to square footage we do not want to use them directly in the model as a numerical value.  I researched if an adjusted square footage was feasible, but according to the National Association of Homebuilders the percentage of square footage allocated to bedrooms and bathrooms remains constant at 40% irrespective of home size [(Source)](https://bestinamericanliving.com/2016/08/where-builders-place-their-space-2/)
-  </a>
-</p>  For this reason I explored ways to use bedrooms and bathrooms categorically.
+### Exploring Vehicle Make
+Plotting the top 5 highest value makes, and the lowest 5 valued makes shows there is a wide range of values depending upon the manufacturer of the vehicle.  Because we have over 40 makes in our dataset, One-hot-encoding is not feasible.  We will encode using target variable encoding which assigns the make's mean selling price as the value for the encoded column.  This preserves the disparity in values more effectively than one-hot would.  The same encoding will be used on the other categorical values prior to modelling.
 
-### Exploring Number of Bathrooms
-Using a box plot we look graphically at the how the number of bathrooms affects property value.  We see that the effect appears linear up to 3.5 bathrooms as which point it jumps sharply and levels off.  We created a categorical variable to capture properties that had more than 3 bathrooms for use in modelling.  And looked at the populations of each subset graphically.  While three or less bathrooms were consistant with the mean, properties with more than three bathrooms had a significantly higher property value.  This was confirmed by a T-Test where we rejected the null hypothesis that the values were equal.  
+### Co-dependence of Odometer and Model Year
+Using a correlation heat map we can see that both odometer and year are linearly related to selling price, but they are also related to each other.  To reduce colinearity while still preserving the data we made the following conversions.  
+    - Convert year to age to capture the effect of an older vehicles
+    - Divide Odometer by age to create miles_per_year and place a value on the relative wear on the vehicle 
+A pearson R test confirmed that the new categories reduced the colinearity
 
-There were similar observations in garage size and a similar category was created for garages that had three to five parking spaces.  Bedroom count showed no similar trend, so we used it as a categorical variable. 
-
-
+### Exploring Vehicle condition
+Because condition is a subjective measure I wanted to confirm that it was related to selling price.  Plotting the condition we see a relationship as expected, although it is a very noisy plot.  During modeling I'll try versions with and without condition to verify it's effectiveness.
 
 ### Takeaways from exploration:
-- We've identified that location is vital to property value
-- Square footage, bedrooms, and bathrooms are all key drivers of property value, but are correlated to each other and must be used differently
-- High number of bathrooms is significant, as are large garages which can be used as categories
+- Distribution of the target variable, selling price, is a right-skewed normal distribution
+- MMR is an excellent predictor of sales price. We'll try to beat it, then improve upon it
+- Transmission, condition, make, model, color, and interior all drive the price, and we'll target-encode
+- Odometer and year are co-linear. Converted to age_at_sale and miles_per_year to reduce colinearity
 
 [[Back to top](#top)]
 
@@ -146,43 +138,60 @@ There were similar observations in garage size and a similar category was create
 ## <a name="model"></a>Modeling:
 
 #### Modeling Results
-| Model | RMSE on train | RMSE on validate | R2 score |
-| ---- | ---- | ---- |---- |
-| Baseline | $233,115.06 | N/A | N/A |
-| Linear Regression (OLS) | $198,418.25 | $199,021.70 | 0.2816 |  
-| LassoLars | $198,424.85 | $199,017.21 |  0.2816 |
-| Tweedie Regressor | $198,944.70 | $199,738.47 | 0.2764 |
+SKLearn's Linear Regression model without using MMR as a feature:
+    train:      $3985 RMSE : 79.3 R^2
+    validate:   $3984 RMSE : 79.5 R^2
+    
+XGBoost Linear Regression model without using MMR as a feature:
+    train:      $3002 RMSE : 88.2 R^2
+    validate:   $3013 RMSE : 88.3 R^2
+    
+SKLearn's Linear Regression model with MMR as a feature:
+    train:      $1480 RMSE : 97.1 R^2
+    validate:   $1513 RMSE : 97.0 R^2
+    
+XGBoost Linear Regression model with MMR as a feature:
+    train:      $1404 RMSE : 97.4 R^2
+    validate:   $1442 RMSE : 97.3 R^2
 
- 
 
-
-- The LassoLars model performed slightly better than the OLS and Tweedie Regressor models
-
+- The standalone models without MMR as a feature were unable to beat the performance of the MMR model
+- Using the MMR as a feature, we were able to reduce the MMR error by over $250
 
 ## Testing the Model
 
-- Tweedie Regressor model used on Test data
+- XGBoost Model using MMR as a feature
 
 #### Testing Dataset
 
 | Model | RMSE on test | R2 score |
 | ---- | ---- | ---- |
-| Tweedie Regressor | $198,604.47 |  0.278 |
+| XGBoost | $1406 |  97.4 |
 
 [[Back to top](#top)]
 
 ***
 
 ## <a name="conclusion"></a>Conclusion and Next Steps:
+Summary
+The purpose of this project was utilize a database of used auto sales to construct a model that can predict sale price.
+The first goal, to build a stand-alone model that beat the Manheim Market Report estimate, failed.
 
-- We created a tax value predictor that beat the baseline by $35,000
+I was successfull at my second goal, to utilize the MMR estimate to improve upon their model.
 
-- The model performed significantly better when the dataset was restricted to a more narrow set of data
+I was able to utilize Skim, Pipeline, TargetEncoder, and XGBoost in my project, all of which simplified and improved my process and final product.
 
-- Location was the largest driver of tax value, followed by square footage
+Drivers of Selling Price
+Through initial testing of multiple models I was able to determine that the key drivers of a car's price were the make, age, model, and transmission type.
 
-- I attempted to create a function that created a dictionary of models trained for each of the most popular tracts
-    - Consolidating results and evaluating proved too difficult to implement in the time given
+Expecations for Implementation
+The consistant and outstanding performance on the test data indicates performance on new/unseen data would be high.
+
+Recommendations
+I recommend implemation of this model for business use at this time only if a stream of recent and reliable sales data can be obtained in order to keep the model current. Most of the sales in this dataset were from 2014-2015, so updated data to re-train the model would be required before using it to make purchase decisions.
+
+Next Steps
+With more time I would further tune the hyperparameters of the XGBoost model to try and obtain even better performance. Additionally, the VIN could be used to obtain more features about the vehicle such as engine size or technology packages. These could further improve model performance, but given that the current performance is more than adequate it may not be a wise investment of resources for what would likely be an incremental improvement.
 
 [[Back to top](#top)]
 
