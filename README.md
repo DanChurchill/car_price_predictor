@@ -139,18 +139,22 @@ Because condition is a subjective measure I wanted to confirm that it was relate
 
 #### Modeling Results
 SKLearn's Linear Regression model without using MMR as a feature:
+
     train:      $3985 RMSE : 79.3 R^2
     validate:   $3984 RMSE : 79.5 R^2
     
 XGBoost Linear Regression model without using MMR as a feature:
+
     train:      $3002 RMSE : 88.2 R^2
     validate:   $3013 RMSE : 88.3 R^2
     
 SKLearn's Linear Regression model with MMR as a feature:
+
     train:      $1480 RMSE : 97.1 R^2
     validate:   $1513 RMSE : 97.0 R^2
     
 XGBoost Linear Regression model with MMR as a feature:
+
     train:      $1404 RMSE : 97.4 R^2
     validate:   $1442 RMSE : 97.3 R^2
 
@@ -177,9 +181,9 @@ Summary
 The purpose of this project was utilize a database of used auto sales to construct a model that can predict sale price.
 The first goal, to build a stand-alone model that beat the Manheim Market Report estimate, failed.
 
-I was successfull at my second goal, to utilize the MMR estimate to improve upon their model.
+  -I was successfull at my second goal, to utilize the MMR estimate to improve upon their model.
 
-I was able to utilize Skim, Pipeline, TargetEncoder, and XGBoost in my project, all of which simplified and improved my process and final product.
+  -I was able to utilize Skim, Pipeline, TargetEncoder, and XGBoost in my project, all of which simplified and improved my process and final product.
 
 Drivers of Selling Price
 Through initial testing of multiple models I was able to determine that the key drivers of a car's price were the make, age, model, and transmission type.
@@ -199,11 +203,8 @@ With more time I would further tune the hyperparameters of the XGBoost model to 
 
 ## <a name="reproduce"></a>Steps to Reproduce:
 
-You will need your own env.py file with database credentials then follow the steps below:
-
-  - Download the wrangle.py, explore.py, modeling.py, and final_report.ipynb files
-  - Download the FIPS, points, scale, and tract JPEGs for visualizations
-  - Add your own env.py file to the directory (user, host, password)
+  - Download the wrangle.py, explore.py, and final_notebook.ipynb
+  - Download the car_prices.csv
   - Run the final_repot.ipynb notebook
 
 [[Back to top](#top)]
