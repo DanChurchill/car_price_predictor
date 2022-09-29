@@ -1,4 +1,4 @@
-# CLASSIFICATION PROJECT - 2017 ZILLOW TAX VALUES<a name="top"></a>
+# PREDICTING USED CAR SALES PRICES<a name="top"></a>
 ![]()
 
 by: Dan Churchill
@@ -24,11 +24,13 @@ ___
 
 
 ## <a name="project_description"></a>Project Description and Goals:
-The purpose of this project is to create a Regression Model that predicts property tax assessed values of Single Family Properties that were sold in 2017 from a database of Zillow data  
-    
-  Goal 1: Create a model that can predict the tax value better than the baseline rate<br>
-  Goal 2: Find the key drivers of tax value for single family properties<br>
-  Goal 3: Identify where the properties are located
+The purpose of this project is utilize a database of used auto sales to construct a model that can predict their sale price. The datasource includes the Manheim Market Report price, an industry standard for pricing automobiles. Can that model be beaten?
+
+Goal 1: Build a model using only the features of the vehicle to predict sales price.
+
+Goal 2: Build a model using the MMR estimate along with the auto's features to improve upon the MMR model.
+
+Goal 3: Try some tools I haven't previously used including Skim, Pipeline, TargetEncoder, and XGBoost.
 
 
 [[Back to top](#top)]
