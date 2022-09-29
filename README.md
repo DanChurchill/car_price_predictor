@@ -57,41 +57,28 @@ Goal 3: Try some tools I haven't previously used including Skim, Pipeline, Targe
 
 | Target Attribute | Definition | Data Type |
 | ----- | ----- | ----- |
-| tax_value | the 2017 assessed tax value of the property | float |
+| sellingprice | the actual selling price of the used vehicle | int |
 
 
 ---
 | Feature | Definition | Data Type |
 | ----- | ----- | ----- |
-| parcelid | Unique id for each property| int |
-| bathrooms| The number of bathrooms on the property | float |
-| bedrooms | The number of bedrooms on the property | float |
-| county| The County the property is located in | string |
-| fireplacecnt | The number of fireplaces on the property | float|
-| garagecarcnt | The number of cars that can be held in the garage on the property | float |
-| lotsize | the square footage of the land | float |
-| poolcnt | the number of pools on the property | float |
-| lat | The geographical latitude of the property | float |
-| long | The geographical longitude of the property | float |
-| logerror | the logerror of zillows model, retained for possible future use, but not used in this project | float |
-| tract | the census tract of the property, with the FIPS and decimal portions removed | float |
-| Los Angeles | 1 if the property is in LA County | int |
-| Orange | 1 if the property is in Orange County | int |
-| Ventura | 1 if the property is in Ventura County | int |
-| 1.0 | 1 if the property has one bedroom | int |
-| 2.0 | 1 if the property has two bedrooms | int |
-| 3.0 | 1 if the property has three bedrooms | int |
-| 4.0 | 1 if the property has four bedrooms | int |
-| 5.0 | 1 if the property has five bedrooms | int |
-| 6.0 | 1 if the property has six bedrooms | int |
-| 7.0 | 1 if the property has seven bedrooms | int |
-| 8.0 | 1 if the property has eight bedrooms | int |
-| 9.0 | 1 if the property has nine bedrooms | int |
-| 10.0 | 1 if the property has ten bedrooms | int |
-| 11.0 | 1 if the property has eleven bedrooms | int |
-| age | the age of the property in years | float
-| 4plusBath | 1 if the property has more than three bathrooms | int
-| 3to5garage | 1 if the property's garage has the capacity for 3 to 5 cars | int
+| year | The model year of the vehicle| int |
+| make | The manufacturer of the vehicle | string |
+| model | The model of the vehicle | string |
+| trim | The trim level of the vehicle | string |
+| body | The bodystyle of the vehicle | string |
+| transmission | The type of transmission in the vehicle | string |
+| vin | the vehicle identification number of the vehicle | string |
+| state | two-digit state/province code where the sale occurred | string |
+| condition | subjective 1.0-5.0 condition rating of the vehicle | float |
+| odometer | the mileage of the vehicle | float |
+| color | the exterior paint color of the vehicle | string |
+| interior | the interior color of the vehicle | string |
+| seller | the seller of the vehicle | string |
+| mmr | the manheim market report valuation of the vehicle | int |
+| sellingprice | the actual selling price of the vehicle | int |
+| saledate | the date the vehicle was sold | string |
 
 [[Back to top](#top)]
 
