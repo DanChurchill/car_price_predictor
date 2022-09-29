@@ -41,12 +41,13 @@ Goal 3: Try some tools I haven't previously used including Skim, Pipeline, Targe
 
 ### Project Outline:
 - Acquire and prepare data from a locally saved CSV originally obtained from <A href="https://www.kaggle.com/code/desalegngeb/auctioning-used-cars-what-matters-most/data?select=car_prices.csv">Kaggle.com</A>
-
-
-- Perform initial data exploration to determine what features will be usefull for modeling
 - Establish a baseline RMSE
-- Train three different linear regression models and evaluate on train and validate datasets
-- Choose the model with that performs the best and evaluate that single model on the test dataset
+- Perform data exploration to determine what features will be usefull for modeling
+- Train two different linear regression models without using the MMR predictions
+    - Make predictions and evaluate.  Did we beat MMR?
+- Train two linear regression models including the MMR predictions
+    - Make predictions and evaluate.  Did we improve on MMR?
+- Choose the model with that performed the best and evaluate that single model on the test dataset
 - Document conclusions, takeaways, and next steps in the Final Report Notebook.
 
 [[Back to top](#top)]
