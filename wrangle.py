@@ -6,10 +6,21 @@ from sklearn.model_selection import train_test_split
 def get_cars():
     '''
     function to read the dataset from local csv file
+    lines with errors are not imported, and errors are surpressed for presentation
+    the original csv contains a few lines with shifted columns
+    returns the file contents as a dataframe
     '''
     return pd.read_csv('car_prices.csv', error_bad_lines=False, warn_bad_lines=False)
 
 def carwash_1(df):
+    '''
+    function to perform initial data prep on car sales data prior to univariate exploration
+    Actions include null handling, outlier handling, removes duplicate rows, 
+    text value standardization, and datatype conversions where necessary.
+    Accepts a dataframe and returns the dataframe with reformatted values
+    '''
+
+    # null handling
     df.transmission = df.transmission.fillna('unknown_transmission')
     df = df.dropna()
 
@@ -20,10 +31,10 @@ def carwash_1(df):
     lower_bound = q1 - 3 * iqr   # get lower bound
     df = df[(df['sellingprice'] > lower_bound) & (df['sellingprice'] < upper_bound)]
 
+    # remove duplicate VINs
+    df.drop_duplicates(subset="vin", keep=False, inplace=True) 
 
-    df.drop_duplicates(subset="vin", keep=False, inplace=True) # remove duplicate VINs
-
-    # consolidate body types into categories as best as possible
+    # consolidate body types into standard categories as best as possible
     df['body'].str.lower()
     df['body'] = np.where((df['body'].str.contains('van', case=False)), 'van', df.body)
     df['body'] = np.where((df['body'].str.contains('coupe', case=False)), 'coupe', df.body)
@@ -35,9 +46,10 @@ def carwash_1(df):
     df['body'] = np.where((df['body'].str.contains('crew', case=False)), 'truck', df.body)
     df['body'] = np.where((df['body'].str.contains('suv', case=False)), 'SUV', df.body)
 
-
+    # replace -'s with with a more clear value
     df['interior'] = np.where((df.interior == '—'), 'unknown_interior', df.interior) # change dashes to unknown_interior
     df['color'] = np.where((df.color == '—'), 'unknown_color', df.color)  # change dashes to 'unknown_color'
+
 
     df.odometer = df.odometer.astype(int) # change odometer to integer 
     df.state = df['state'].apply(lambda x: x.upper())  # uppercase state abbreviations
@@ -48,6 +60,12 @@ def carwash_1(df):
     return df
 
 def carwash_2(df):
+    '''
+    Function to perform further data cleaning and feature engineering for car sales data
+    creates age_at_sale and miles_per_year columns.  Drops columns not needed for modeling,
+    and removes some vehicles with erroneous odometer readings
+    Accepts a dataframe, returns the dataframe with transformations applied
+    '''
 
     df['saleyear'] = df.saledate.str[11:16].astype(int)  # get sale year from sale date
     df['age_at_sale'] = df.saleyear - df.year  # create age at time of sale 
@@ -75,6 +93,11 @@ def carwash_2(df):
     
 
 def split_cars(df):
+    '''
+    Function to split dataframe into 60% train, 20% validate, and 20% test
+    Random state is set for repeatability.
+    Accepts a dataframe and returns three dataframes
+    '''
     # separate into 80% train/validate and test data
     train_validate, test = train_test_split(df, test_size=.2, random_state=333)
 
