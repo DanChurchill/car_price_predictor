@@ -40,7 +40,9 @@ Goal 3: Try some tools I haven't previously used including Skim, Pipeline, Targe
 
 
 ### Project Outline:
-- Acquire, clean, and prepare data from the Codeup Database using a function saved in a wrangle.py file to import into the Final Report Notebook.
+- Acquire and prepare data from a locally saved CSV originally obtained from <A href="https://www.kaggle.com/code/desalegngeb/auctioning-used-cars-what-matters-most/data?select=car_prices.csv">Kaggle.com</A>
+
+
 - Perform initial data exploration to determine what features will be usefull for modeling
 - Establish a baseline RMSE
 - Train three different linear regression models and evaluate on train and validate datasets
