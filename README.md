@@ -10,7 +10,7 @@ by: Dan Churchill
 </p>
 
 ## <a name='executive_summary'></a>Executive Summary:
-This project attempted to find the key drivers of selling price in Used cars using records of over 500K actual sales.  It attempted to create a model that could outperform the Manheim Market Report (MMR).  While unsuccessful, it was able to use MMR as a feature to improve upon the MMR predictions by over $250.  Additionally, I was able to try out some data processing and modeling tools for the first time.  The improved MMR model could easily be implemented to gain an advantage in the used car market, although it would require updated an updated data source prior to implementation.
+This project attempted to find the key drivers of selling price in Used cars using records of over 500K actual sales.  Then a model was created to try and  outperform the Manheim Market Report (MMR).  While initially unsuccessful, I was able to utilize the MMR value as a feature to improve upon the MMR predictions by over 16%. The improved MMR model could easily be implemented to gain an advantage in the used car market, although it would require an updated data source prior to implementation.
 
 ***
 [[Project Description](#project_description)]
